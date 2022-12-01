@@ -1,6 +1,7 @@
 from pathlib import Path
-from rich import print
+
 import pytest
+from rich import print
 
 SAMPLE_INPUT = """\
 1000
