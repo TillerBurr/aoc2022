@@ -1,23 +1,29 @@
 [project]
-authors = [
-  {name = "Tyler Baur", email = "tbaur@teuteberg.com"},
-]
+
+
+name = "aoc2022"
+version = "0.1.0"
+description = "Add your description here"
+authors = [{ name = "Tyler Baur", email = "tbaur@teuteberg.com" }]
 dependencies = [
-    "httpx>=0.23.1",
-    "rich>=12.6.0",
-    "pytest>=7.2.0",
-    "pre-commit>=2.20.0",
+    "httpx>=0.24.1",
+    "rich>=13.5.2",
+    "pytest>=7.4.0",
+    "pre-commit>=3.3.3",
+    "typer>=0.9.0",
 ]
-description = ""
-license = {text = "MIT"}
-name = ""
-requires-python = ">=3.11"
-version = ""
+readme = "README.md"
+requires-python = ">= 3.8"
 
+[project.scripts]
+aoc = 'aoc2022.cli:app'
 [build-system]
-build-backend = "pdm.pep517.api"
-requires = ["pdm-pep517>=1.0.0"]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.pdm]
+[tool.rye]
+managed = true
+dev-dependencies = []
 
-[mypy]
+[tool.hatch.metadata]
+allow-direct-references = true
