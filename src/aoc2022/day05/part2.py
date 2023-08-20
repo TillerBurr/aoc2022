@@ -14,7 +14,7 @@ move 3 from 1 to 3
 move 2 from 2 to 1
 move 1 from 1 to 2\
 """
-EXPECTED = "CMZ"
+EXPECTED = "MCD"
 
 data = Path("./input.txt").read_text()
 
@@ -23,24 +23,24 @@ def parse_input(_input: str) -> str:
     crates, instructions = _input.split("\n\n")
     number_of_crates = max([int(x) for x in crates.splitlines()[-1].split()])
     stacks = [[] for _ in range(number_of_crates)]
-    print(stacks)
     crates = crates.splitlines()[:-1]
-    print(crates)
     crates.reverse()
     for crate_line in crates:
         for i, x in enumerate(crate_line[1::4]):
             stacks[i].append(x)
     stacks = [list("".join(x).strip()) for x in stacks]
-    print(stacks)
     instructions = instructions.splitlines()
     instructions = [re.findall(r"\d+", y) for y in instructions]
     instructions = [[int(y) for y in x] for x in instructions]
-    print(instructions)
     for instr in instructions:
         n, f, t = instr
-        for i in range(n):
-            moved = stacks[f - 1].pop()
-            stacks[t - 1].append(moved)
+
+        moved = stacks[f - 1][-n:]
+        stacks[f - 1] = stacks[f - 1][:-n]
+
+        stacks[t - 1] += moved
+        print(stacks)
+        print("=" * 50)
 
     result = "".join([x[-1] for x in stacks])
     return result

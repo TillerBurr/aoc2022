@@ -57,7 +57,7 @@ def post_solution(year: int, day: int, part: int, answer: int) -> str:
 
 @app.command()
 def submit_answer(
-    answer: Annotated[int, typer.Option("-a")],
+    answer: Annotated[str, typer.Option("-a")],
     day: Annotated[int, typer.Option("-d")] = 1,
     part: Annotated[int, typer.Option("-p")] = 1,
 ):
