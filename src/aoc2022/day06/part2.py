@@ -6,17 +6,17 @@ from rich import print
 SAMPLE_INPUT = """\
 mjqjpqmgbljsphdztnvjfqwrcgsmlb\
 """
-EXPECTED = 7
+EXPECTED = 19
 
 data = Path("./input.txt").read_text()
 
 
 def parse_input(_input: str) -> str:
     _input = _input.strip()
-    four_deque = deque(maxlen=4)
+    four_deque = deque(maxlen=14)
     for i, char in enumerate(_input):
         four_deque.append(char)
-        if len(four_deque) == 4 and len(set(four_deque)) == 4:
+        if len(four_deque) == 14 and len(set(four_deque)) == 14:
             return i + 1
 
 
