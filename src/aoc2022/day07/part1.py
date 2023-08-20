@@ -46,7 +46,6 @@ def parse_input(_input: str) -> int:
                 cwd = root
             case ["$", "cd", ".."]:
                 cwd = cwd.parent
-                print(cwd)
             case ["$", "cd", name]:
                 cwd = cwd / name
 
