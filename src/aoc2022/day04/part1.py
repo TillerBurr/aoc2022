@@ -20,8 +20,8 @@ def parse_input(_input: str) -> int:
     result = 0
     lines = [x.split(",") for x in _input.splitlines()]
     for a, b in lines:
-        e1_start, e1_end = [int(x) for x in a.split("-")]
-        e2_start, e2_end = [int(x) for x in b.split("-")]
+        e1_start, e1_end = (int(x) for x in a.split("-"))
+        e2_start, e2_end = (int(x) for x in b.split("-"))
         if (e1_start <= e2_start and e1_end >= e2_end) or (
             e1_start >= e2_start and e1_end <= e2_end
         ):

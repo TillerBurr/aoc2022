@@ -1,11 +1,12 @@
+import re
+import subprocess
 from pathlib import Path
 from typing import Annotated
-import typer
-from rich import print
-from httpx import request
-import sh
-import re
 
+import sh
+import typer
+from httpx import request
+from rich import print
 
 app = typer.Typer()
 
@@ -15,7 +16,11 @@ cookie = env.read_text().strip()
 ALREADY_SOLVED = re.compile(
     "You don't seem to be solving the right level.  Did you already complete it?"
 )
-CORRECT = re.compile(">That's the right answer!")
+CORRECT = re.compile("That's the right answer!")
+
+
+def create_day_path(day: int) -> Path:
+    return Path(__file__).parent / f"day{day:02}"
 
 
 def input_request(year: int, day: int) -> str:
@@ -29,11 +34,12 @@ def input_request(year: int, day: int) -> str:
 @app.command(name="download-input")
 def get_input(
     day: Annotated[int, typer.Option("-d")] = 1,
+    year: Annotated[int, typer.Option("-y")] = None,
 ) -> int:
-    year = int(Path(__file__).parent.name[-4:])
+    year = year or int(Path(__file__).parent.name[-4:])
+    print(year)
     content = input_request(year, day)
-    day_str = str(day).zfill(2)
-    day_path = Path(__file__).parent / f"day{day_str}"
+    day_path = create_day_path(day)
     if not day_path.exists():
         day_path.mkdir()
         temp = day_path.parent / "day00/part1.py"
@@ -60,18 +66,39 @@ def submit_answer(
     answer: Annotated[str, typer.Option("-a")],
     day: Annotated[int, typer.Option("-d")] = 1,
     part: Annotated[int, typer.Option("-p")] = 1,
+    year: Annotated[int, typer.Option("-y")] = None,
 ):
-    year = int(Path(__file__).parent.name[-4:])
+    year = year or int(Path(__file__).parent.name[-4:])
     r = post_solution(year=year, day=day, part=part, answer=answer)
     if ALREADY_SOLVED.search(r):
         print("❌❌ Already solved ❌❌")
     elif CORRECT.search(r):
-        print("✅✅Correct!✅✅")
+        print("✅✅ Correct! ✅✅")
         if part == 1:
-            day_path = Path(__file__).parent / f"day{day:02}"
+            day_path = day_path = create_day_path(day)
             sh.cp(day_path / "part1.py", day_path / "part2.py")
     else:
         print(r)
+
+
+@app.command()
+def test(
+    day: Annotated[int, typer.Option("-d")] = 1,
+    part: Annotated[int, typer.Option("-p")] = 1,
+) -> int:
+    day_path = day_path = create_day_path(day)
+    test_file = day_path / f"part{part}.py"
+    subprocess.run(["pytest", test_file, "-s"])
+
+
+@app.command("solve")
+def calculate_answer(
+    day: Annotated[int, typer.Option("-d")] = 1,
+    part: Annotated[int, typer.Option("-p")] = 1,
+) -> int:
+    day_path = day_path = create_day_path(day)
+    test_file = day_path / f"part{part}.py"
+    subprocess.run(["python", test_file])
 
 
 if __name__ == "__main__":

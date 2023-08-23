@@ -10,7 +10,7 @@ C Z\
 """
 EXPECTED = 15
 
-data = Path("./input.txt").read_text()
+data = (Path(__file__).parent / "input.txt").read_text()
 
 winning_play = {"R": "S", "P": "R", "S": "P"}
 shape_score = {"R": 1, "P": 2, "S": 3}

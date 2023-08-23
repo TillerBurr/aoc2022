@@ -21,7 +21,7 @@ SAMPLE_INPUT = """\
 """
 EXPECTED = 24000
 
-data = Path("./input.txt").read_text()
+data = (Path(__file__).parent / "input.txt").read_text()
 
 
 def parse_input(_input: str) -> list[list[int]]:

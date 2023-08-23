@@ -1,5 +1,6 @@
-from pathlib import Path
 from collections import deque
+from pathlib import Path
+
 import pytest
 from rich import print
 

@@ -10,7 +10,7 @@ C Z\
 """
 EXPECTED = 12
 
-data = Path("./input.txt").read_text()
+data = (Path(__file__).parent / "input.txt").read_text()
 
 lose_play = {"R": "S", "P": "R", "S": "P"}
 win_play = {"R": "P", "P": "S", "S": "R"}

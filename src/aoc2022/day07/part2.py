@@ -1,8 +1,8 @@
+from collections import defaultdict
 from pathlib import Path
 
 import pytest
 from rich import print
-from collections import defaultdict
 
 SAMPLE_INPUT = """\
 $ cd /
