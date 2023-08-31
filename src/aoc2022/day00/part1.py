@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Any
 
 import pytest
 from rich import print
@@ -29,13 +30,20 @@ def parse_input(_input: str) -> str:
     return "str"
 
 
+def compute_soln(_input: str) -> Any:
+    parsed = parse_input(_input)
+    return parsed
+
+
 @pytest.mark.parametrize(
     ("_input", "expected"),
     ((SAMPLE_INPUT, EXPECTED),),
 )
 def test(_input: str, expected: int) -> None:
-    assert parse_input(_input) == expected
+    soln = compute_soln(_input)
+    assert soln == expected
 
 
 if __name__ == "__main__":
-    print(f"Input:{parse_input(data)}")
+    soln = compute_soln(data)
+    print(soln)
