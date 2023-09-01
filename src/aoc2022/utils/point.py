@@ -1,4 +1,3 @@
-from collections.abc import Generator
 from dataclasses import dataclass
 from typing import Literal, Self
 
@@ -20,6 +19,9 @@ class Point:
     def adjacent_dist(self, other: Self) -> int:
         return max(abs(self.x - other.x), abs(self.y - other.y))
 
+    def manhattan_distance(self, other: Self) -> int:
+        return abs(self.x - other.x) + abs(self.y - other.y)
+
     def dx(self, other: Self) -> int:
         return self.x - other.x
 
@@ -30,7 +32,7 @@ class Point:
     def coords(self) -> tuple[int, int]:
         return (self.x, self.y)
 
-    def get_adjacent(self) -> Generator[Self, None, None]:
+    def get_adjacent(self) -> tuple[Self, Self, Self, Self]:
         return (
             Point(self.x + 1, self.y),
             Point(self.x - 1, self.y),
