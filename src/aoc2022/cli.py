@@ -1,6 +1,7 @@
 import re
 import subprocess
 from pathlib import Path
+from time import perf_counter
 from typing import Annotated
 
 import sh
@@ -102,7 +103,10 @@ def calculate_answer(
 ) -> int:
     day_path = day_path = create_day_path(day)
     test_file = day_path / f"part{part}.py"
+    t_1 = perf_counter()
     subprocess.run(["python", test_file])
+    run_time = perf_counter() - t_1
+    print(f"Process took {run_time:.02f} Seconds")
 
 
 if __name__ == "__main__":

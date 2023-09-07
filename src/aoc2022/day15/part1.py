@@ -43,50 +43,67 @@ def parse_line(line: str) -> tuple[Point, Point]:
 class SensorBeacon:
     sensor: Point
     beacon: Point
-
-    @property
-    def distance_to_beacon(self) -> int:
-        # d = |x1-x2|+|y1-y2|
-        return self.sensor.manhattan_distance(self.beacon)
+    distance: int
 
 
 def parse_input(_input: str) -> list[SensorBeacon]:
     lines = _input.splitlines()
     parsed_lines = [parse_line(line) for line in lines]
-    sensors = [SensorBeacon(x[0], x[1]) for x in parsed_lines]
+    sensors = [
+        SensorBeacon(x[0], x[1], x[0].manhattan_distance(x[1])) for x in parsed_lines
+    ]
     return sensors
 
 
-def compute_coverage(_input: str, y: int) -> set[Point]:
-    sensors = set()
-    beacons = set()
-    covered = set()
+"""TODO This is slow. find a better algorithm.
+
+Find Outside perimeter
+and compute intervals.
+"""
+
+
+def compute_coverage(_input: str, row: int) -> set[Point]:
     parsed = parse_input(_input)
-    for sensor in parsed:
-        sensors.add(sensor.sensor)
-        beacons.add(sensor.beacon)
-    for sensor in parsed:
-        d = sensor.distance_to_beacon
-        y_s = sensor.sensor.y
-        x_s = sensor.sensor.x
+    no_beacons = []
+
+    for sensor_beacon in parsed:
+        d = sensor_beacon.distance
+        y_s = sensor_beacon.sensor.y
+        x_s = sensor_beacon.sensor.x
         # d(Point(x_s,y_s),Point(x,y))=|x_s-x|+|y_s-y|
-        x_dist = d - abs(y - y_s)  # |x-x_s|
+        d_x = d - abs(row - y_s)  # |x-x_s|
+        if d_x < 0:
+            continue
+        x_min = x_s - d_x
+        x_max = x_s + d_x
+        no_beacons.append([x_min, x_max])
+
+    no_beacons.sort(key=lambda x: x[0])
+    # every interval has x[0]<=y[0] for x<=y
+    merged_no_beacons = [no_beacons[0]]
+    for it in no_beacons[1:]:
+        prev_interval = merged_no_beacons[-1]
+        prev_interval_upper_bound = prev_interval[1]
         """
-        x_s-x_dist=x_s-|x-x_s|=x if x<x_s, 2x_s-x if x>x_s
-        x_s+x_dist=x_s+|x-x_s|=x if x>x_s, 2x_s-x if x<x_s
+        Four Cases for x<y
+            1. x[1]<y[0], intervals don't intersect
+            2. x[1]=y[0], intervals are next to each other
+            3. y[0]<x[1]<y[1], Intervals are partially covered
+            4. y[1]<=x[1], y is inside of x
         """
-        for i in range(-x_dist, x_dist + 1):
-            test_pt = Point(x_s + i, y)
-            covered.add(test_pt)
+        if prev_interval_upper_bound >= it[1]:  # #4
+            continue
+        elif prev_interval_upper_bound <= it[0]:  # #1
+            merged_no_beacons.append(it)
+        elif it[0] <= prev_interval_upper_bound < it[1]:  # #2 and #3
+            merged_no_beacons[-1][1] = it[1]
+    num_no_beacons = sum([x[1] - x[0] for x in merged_no_beacons])
 
-    return covered - beacons - sensors
+    return num_no_beacons
 
 
-def compute_soln(_input: str, y: int) -> Any:
-    empty = compute_coverage(_input, y)
-    row_emp = [x for x in empty if x.y == y]
-
-    return len(row_emp)
+def compute_soln(_input: str, row: int) -> Any:
+    return compute_coverage(_input, row)
 
 
 @pytest.mark.parametrize(
@@ -99,5 +116,6 @@ def test(_input: str, expected: int) -> None:
 
 
 if __name__ == "__main__":
+    # soln = compute_soln(SAMPLE_INPUT, 10)
     soln = compute_soln(data, 2_000_000)
     print(soln)
