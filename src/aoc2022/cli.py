@@ -20,6 +20,7 @@ ALREADY_SOLVED = re.compile(
 CORRECT = re.compile("That's the right answer!")
 
 INCORRECT_TOO_HIGH = re.compile("That's not the right answer; your answer is too high.")
+INCORRECT_TOO_LOW = re.compile("That's not the right answer; your answer is too low.")
 
 
 def create_day_path(day: int) -> Path:
@@ -77,6 +78,8 @@ def submit_answer(
         print("❌❌ Already solved ❌❌")
     elif INCORRECT_TOO_HIGH.search(r):
         print("❌❌ Too High ❌❌")
+    elif INCORRECT_TOO_LOW.search(r):
+        print("❌❌ Too Low ❌❌")
     elif CORRECT.search(r):
         print("✅✅ Correct! ✅✅")
         if part == 1:
